@@ -1,0 +1,9 @@
+{application,ediff,
+             [{pkg_name,"ediff"},
+              {vsn,"1.0.1"},
+              {description,"Erlang version of diff(1)"},
+              {links,[{"Github","https://github.com/SirWumpus/erlang-diff"}]},
+              {applications,[kernel,stdlib,ebs,egetopt]},
+              {licenses,["MIT"]},
+              {modules,[ediff]},
+              {files,["README.md","makefile","rebar.config","src","test"]}]}.
