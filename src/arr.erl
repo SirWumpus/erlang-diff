@@ -2,7 +2,7 @@
 %% Array with origin shift.
 %%
 -module(arr).
--export([new/3, get/2, set/3, size/1]).
+-export([new/3, get/2, set/3, size/1, lower/1, upper/1]).
 
 new(Size, Zero, Defval) ->
 	{arr, Zero, array:new(Size, [{default, Defval}, {fixed, true}])}.
@@ -15,3 +15,9 @@ set(Index, Value, {arr, Zero, Arr}) ->
 
 size({arr, _Zero, Arr}) ->
 	array:size(Arr).
+
+lower({arr, Zero, _Arr}) ->
+	-Zero.
+
+upper({arr, Zero, Arr}) ->
+	array:size(Arr) - Zero - 1.

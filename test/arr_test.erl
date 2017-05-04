@@ -67,3 +67,13 @@ size_test_() ->
 	[
 	?_assertMatch(6, arr:size(arr:new(6, 2, -1)))
 	].
+
+lower_test_() ->
+	[
+	?_assertMatch(-2, arr:lower(arr:new(6, 2, -1)))
+	].
+
+upper_test_() ->
+	[
+	?_assertMatch(3, arr:upper(arr:new(6, 2, -1)))
+	].
