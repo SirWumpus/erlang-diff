@@ -1,0 +1,125 @@
+<<< A='1' B='1' 
+>>> got=0 expect=0 -OK-
+<<< A='1' B='A' 
+>>> got=2 expect=2 -OK-
+<<< A='123' B='ABCDE' 
+>>> got=8 expect=8 -OK-
+<<< A='ABCDE' B='123' 
+>>> got=8 expect=8 -OK-
+<<< A='ABD' B='ABCD' 
+>>> got=1 expect=1 -OK-
+<<< A='ABCD' B='ABD' 
+>>> got=1 expect=1 -OK-
+<<< A='ABCD' B='ACDBECFD' 
+>>> got=4 expect=4 -OK-
+<<< A='ABCDEF' B='ABXYEFCD' 
+>>> got=6 expect=6 -OK-
+<<< A='ABCDEFGHIJK' B='ABCEFGIJKDEFGHIJK' 
+>>> got=6 expect=6 -OK-
+<<< A='ABCABBA' B='CBABAC' 
+>>> got=5 expect=5 -OK-
+<<< A='ACEBDABBABED' B='ACBDEACBED' 
+>>> got=6 expect=6 -OK-
+==== 1.tmp 1.tmp
+got=0 expect=0 -OK-
+==== EMPTY.tmp 123.tmp
+0a1,3
+> 1
+> 2
+> 3
+forward patch -OK-
+forward compare -OK-
+reverse patch -OK-
+reverse compare -OK-
+==== 123.tmp EMPTY.tmp
+1,3d0
+< 1
+< 2
+< 3
+forward patch -OK-
+forward compare -OK-
+reverse patch -OK-
+reverse compare -OK-
+==== ABCD.tmp ACDBECFD.tmp
+1a2,3
+> C
+> D
+2a5
+> E
+3a7
+> F
+forward patch -OK-
+forward compare -OK-
+reverse patch -OK-
+reverse compare -OK-
+==== ACDBECFD.tmp ABCD.tmp
+2,3d1
+< C
+< D
+5d2
+< E
+7d3
+< F
+forward patch -OK-
+forward compare -OK-
+reverse patch -OK-
+reverse compare -OK-
+==== 123.tmp ABCDE.tmp
+0a1,5
+> A
+> B
+> C
+> D
+> E
+1,3d5
+< 1
+< 2
+< 3
+forward patch -OK-
+forward compare -OK-
+reverse patch -OK-
+reverse compare -OK-
+==== ABCDE.tmp 123.tmp
+1,5d0
+< A
+< B
+< C
+< D
+< E
+5a1,3
+> 1
+> 2
+> 3
+forward patch -OK-
+forward compare -OK-
+reverse patch -OK-
+reverse compare -OK-
+==== CBABAC.tmp ABCABBA.tmp
+0a1,2
+> A
+> B
+2d3
+< B
+4a6
+> B
+6d7
+< C
+forward patch -OK-
+forward compare -OK-
+reverse patch -OK-
+reverse compare -OK-
+==== ABCABBA.tmp CBABAC.tmp
+1,2d0
+< A
+< B
+3a2
+> B
+6d4
+< B
+7a6
+> C
+forward patch -OK-
+forward compare -OK-
+reverse patch -OK-
+reverse compare -OK-
+DONE

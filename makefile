@@ -18,7 +18,7 @@ all:
 	rebar3 escriptize
 
 clean:
-	-rm -rf src/*$B *dump
+	-rm -rf src/*$B *dump test/*.tmp
 
 distclean: clean
 	-rm -rf _build _checkouts ebin
@@ -27,6 +27,7 @@ tar:
 	git archive --format tar.gz --prefix ${PROJ}/ -o ${PROJ}.tar.gz HEAD
 
 test: unit
+	cd test; PROG=../${BIN}/ediff ./npdif-test.sh >ediff.tmp; diff npdif-test.out ediff.tmp
 
 unit:
 	rebar3 eunit
