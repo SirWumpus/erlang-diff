@@ -78,19 +78,18 @@ diff(Fp1, Fp2, Opts) ->
 	true ->
 		io:format("~B~n", [Distance]);
 	false ->
-		dump_script(Script)
+		dump_script(Fp1, Fp2, Script)
 	end.
 
 hash_file(Fp) ->
 	% Building list faster than an array when reading a file.
-	Hashes = hash_file(Fp, []),
-	file:position(Fp, 0),
+	Hashes = hash_file(Fp, [#{seek => 0}]),
 	% Once built, convert list to array for faster lookups.
 	array:from_list(lists:reverse(Hashes)).
 hash_file(Fp, Lines) ->
+	{ok, Position} = file:position(Fp, cur),
 	case file:read_line(Fp) of
 	{ok, Line} ->
-		{ok, Position} = file:postion(Fp, cur),
 		hash_file(Fp, [#{seek => Position, hash => fnv:hash56(Line)} | Lines]);
 	eof ->
 		Lines;
@@ -98,5 +97,74 @@ hash_file(Fp, Lines) ->
 		throw(Error)
 	end.
 
-dump_script(Script) ->
-	io:format("~w~n", [Script]).
+dump_script(_FpA, _FpB, []) ->
+	ok;
+dump_script(FpA, FpB, [Curr | Rest]) ->
+	case Curr of
+	{true, {Aline, _Aseek}, {Bline, Bseek}} ->
+		{Bstop, Rest1} = append_block(Bline, Rest),
+
+		case Bline < Bstop of
+		true ->
+			io:format("~Ba~B,~B~n", [Aline, Bline, Bstop]);
+		false ->
+			io:format("~Ba~B~n", [Aline, Bline])
+		end,
+
+		file:position(FpB, Bseek),
+		echo_lines(FpB, "> ", Bstop - Bline + 1);
+
+	{false, {Aline, Aseek}, {Bline, _Bseek}} ->
+		{Astop, Rest1} = delete_block(Aline, Rest),
+
+		case Aline < Astop of
+		true ->
+			io:format("~B,~Bd~B~n", [Aline, Astop, Bline]);
+		false ->
+			io:format("~Bd~B~n", [Aline, Bline])
+		end,
+
+		file:position(FpA, Aseek),
+		echo_lines(FpA, "< ", Astop - Aline + 1)
+	end,
+	dump_script(FpA, FpB, Rest1).
+
+append_block(Lineno, []) ->
+	{Lineno, []};
+append_block(Lineno, [Next | Rest] = Script) ->
+	{Op, _, {Bline, _}} = Next,
+	case Op andalso Lineno+1 == Bline of
+	false ->
+		{Lineno, Script};
+	true ->
+		append_block(Bline, Rest)
+	end.
+
+delete_block(Lineno, []) ->
+	{Lineno, []};
+delete_block(Lineno, [Next | Rest] = Script) ->
+	{Op, {Aline, _}, _} = Next,
+	case not Op andalso Lineno+1 == Aline of
+	false ->
+		{Lineno, Script};
+	true ->
+		delete_block(Aline, Rest)
+	end.
+
+echo_lines(_, _, 0) ->
+	ok;
+echo_lines(Fp, Prefix, Count) ->
+	case file:read_line(Fp) of
+	eof ->
+		eof;
+	{ok, Line} ->
+		file:write(standard_io, Prefix),
+		file:write(standard_io, Line),
+		case str:at(Line, str:len(Line)-1) == $\n of
+		false ->
+			io:nl();
+		true ->
+			ok
+		end,
+		echo_lines(Fp, Prefix, Count-1)
+	end.
