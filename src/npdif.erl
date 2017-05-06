@@ -49,7 +49,7 @@ compute(A, B) ->
 		{Dist, lists:reverse(Script)}
 	end.
 
-compute(A, B, Invert) ->
+compute(A, B, _Invert) ->
 	% Delta = N - M where A[1..M], B[1..N], and N >= M.
 	Delta = array:size(B) - array:size(A),
 
@@ -153,6 +153,7 @@ snake(A, B, Diag, K) ->
 
 slide(X, Y, A, B) ->
 	% Algorithm assumes 1-based indexing, A[1..M] and B[1..N].
+	% There is no hash collision checking.
 	case
 		X+1 < array:size(A) andalso Y+1 < array:size(B)
 		andalso maps:get(hash, array:get(X+1, A)) == maps:get(hash, array:get(Y+1, B))	of
