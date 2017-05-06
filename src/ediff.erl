@@ -91,7 +91,7 @@ hash_file(Fp, Lines) ->
 	case file:read_line(Fp) of
 	{ok, Line} ->
 		{ok, Position} = file:postion(Fp, cur),
-		hash_file(Fp, [{fnv:hash56(Line), Position} | Lines]);
+		hash_file(Fp, [#{seek => Position, hash => fnv:hash56(Line)} | Lines]);
 	eof ->
 		Lines;
 	Error ->
