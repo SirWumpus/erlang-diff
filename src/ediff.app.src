@@ -1,6 +1,6 @@
 {application,ediff,
              [{pkg_name,"ediff"},
-              {vsn,"1.0.1"},
+              {vsn,"1.0.0"},
               {description,"Erlang version of diff(1)"},
               {links,[{"Github","https://github.com/SirWumpus/erlang-diff"}]},
               {applications,[kernel,stdlib,ebs,egetopt]},
