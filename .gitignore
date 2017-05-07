@@ -15,6 +15,7 @@
 *.swo
 *.swp
 *.tds
+*.tmp
 *.tws
 *~
 .erlang.cookie
