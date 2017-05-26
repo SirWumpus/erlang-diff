@@ -27,7 +27,7 @@ tar:
 	git archive --format tar.gz --prefix ${PROJ}/ -o ${PROJ}.tar.gz HEAD
 
 test: unit
-	cd test; PROG=../${BIN}/ediff ./npdif-test.sh >ediff.tmp; diff npdif-test.out ediff.tmp
+	cd test; PROG=../${BIN}/${PROJ} ./npdif-test.sh >${PROJ}.tmp; diff npdif-test.out ${PROJ}.tmp
 
 unit:
 	rebar3 eunit --cover
