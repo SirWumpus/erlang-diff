@@ -26,7 +26,7 @@ distclean: clean
 tar:
 	git archive --format tar.gz --prefix ${PROJ}/ -o ${PROJ}.tar.gz HEAD
 
-test: unit
+test: unit all
 	cd test; PROG=../${BIN}/${PROJ} ./npdif-test.sh >${PROJ}.tmp; diff npdif-test.out ${PROJ}.tmp
 
 unit:
